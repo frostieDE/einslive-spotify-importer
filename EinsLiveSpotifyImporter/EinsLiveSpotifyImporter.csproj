@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Authors>Marcel Marnitz</Authors>
+    <Company />
+    <Product>1LIVE Playlist nach Spotify exportieren</Product>
+    <Copyright>© 2020 Marcel Marnitz</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/frostieDE/einslive-spotify-importer</PackageProjectUrl>
+    <NeutralLanguage>de</NeutralLanguage>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.78" />
+    <PackageReference Include="MvvmLightStd10" Version="5.4.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EinsLivePlaylistCrawler\EinsLivePlaylistCrawler.csproj" />
+    <ProjectReference Include="..\EinsLiveSpotifyImporter.Core\EinsLiveSpotifyImporter.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

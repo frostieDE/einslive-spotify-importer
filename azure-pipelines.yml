@@ -1,0 +1,59 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+- master
+- refs/tags/*
+
+pr:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  dotnetPlatform: 'win-x64'
+
+steps:
+- checkout: self
+
+- task: NuGetToolInstaller@1
+  displayName: Install nuget.exe
+
+- task: DotNetCoreCLI@2
+  displayName: Build application
+  inputs:
+    command: build
+    workingDirectory: EinsLiveSpotifyImporter
+
+- task: DotNetCoreCLI@2
+  displayName: Test Crawler
+  inputs:
+    command: test
+    workingDirectory: EinsLivePlaylistCrawler.Test
+
+- task: DotNetCoreCLI@2
+  displayName: Build self-containing exe
+  inputs:
+    command: publish
+    arguments: -c $(buildConfiguration) -r $(dotnetPlatform) /p:PublishTrimmed=true /p:PublishSingleFile=true
+    workingDirectory: EinsLiveSpotifyImporter
+    publishWebProjects: false
+    zipAfterPublish: false
+  condition: succeeded()
+
+- task: PublishPipelineArtifact@1
+  displayName: Publish exe to artifacts
+  inputs:
+    targetPath: EinsLiveSpotifyImporter/bin/Release/netcoreapp3.1/$(dotnetPlatform)/publish/
+
+- task: GitHubRelease@0
+  displayName: Release to GitHub
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+  inputs:
+    gitHubConnection: 'GitHub.com'
+    repositoryName: frostieDE/einslive-spotify-importer
+    assets: EinsLiveSpotifyImporter/bin/Release/netcoreapp3.1/$(dotnetPlatform)/publish/*.exe
